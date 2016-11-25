@@ -23,7 +23,7 @@ process.env.NODE_ENV = 'development';
 // if this file is missing. dotenv will never modify any environment variables
 // that have already been set.
 // https://github.com/motdotla/dotenv
-require('dotenv').config({ silent: true });
+require('dotenv').config({silent: true});
 
 const fs = require('fs');
 const chalk = require('chalk');
@@ -39,6 +39,7 @@ const config = require('../config/webpack.config.dev');
 const devServerConfig = require('../config/webpackDevServer.config');
 const createWebpackCompiler = require('./utils/createWebpackCompiler');
 const addWebpackMiddleware = require('./utils/addWebpackMiddleware');
+const tryParseInt = require('../utils/tryParseInt');
 
 const useYarn = fs.existsSync(paths.yarnLockFile);
 const cli = useYarn ? 'yarn' : 'npm';
@@ -94,34 +95,40 @@ function run(port) {
     console.log(chalk.cyan('Starting the development server...'));
     console.log();
 
-    openBrowser(`${protocol}://${host}:${port}/`);
+    // DESC: only open browser if we are listening on TCP port
+    if (typeof port === 'number') {
+      openBrowser(protocol + '://' + host + ':' + port + '/');
+    }
   });
 }
 
-// We attempt to use the default port but if it is busy, we offer the user to
-// run on a different port. `detect()` Promise resolves to the next free port.
-detect(DEFAULT_PORT).then(port => {
-  if (port === DEFAULT_PORT) {
-    run(port);
-    return;
-  }
+if (typeof DEFAULT_PORT === 'number') {
+  // We attempt to use the default port but if it is busy, we offer the user to
+  // run on a different port. `detect()` Promise resolves to the next free port.
+  detect(DEFAULT_PORT).then(port => {
+    if (port === DEFAULT_PORT) {
+      run(port);
+      return;
+    }
 
-  if (isInteractive) {
-    clearConsole();
-    const existingProcess = getProcessForPort(DEFAULT_PORT);
-    const question = chalk.yellow(
-      `Something is already running on port ${DEFAULT_PORT}.` +
-        `${existingProcess ? ` Probably:\n  ${existingProcess}` : ''}`
-    ) + '\n\nWould you like to run the app on another port instead?';
+    if (isInteractive) {
+      clearConsole();
+      var existingProcess = getProcessForPort(DEFAULT_PORT);
+      var question =
+        chalk.yellow('Something is already running on port ' + DEFAULT_PORT + '.' +
+          ((existingProcess) ? ' Probably:\n  ' + existingProcess : '')) +
+          '\n\nWould you like to run the app on another port instead?';
 
-    prompt(question, true).then(shouldChangePort => {
-      if (shouldChangePort) {
-        run(port);
-      }
-    });
-  } else {
-    console.log(
-      chalk.red(`Something is already running on port ${DEFAULT_PORT}.`)
-    );
-  }
-});
+      prompt(question, true).then(shouldChangePort => {
+        if (shouldChangePort) {
+          run(port);
+        }
+      });
+    } else {
+      console.log(chalk.red('Something is already running on port ' + DEFAULT_PORT + '.'));
+    }
+  });
+} else {
+  // DESC: directly run if are going to listen unix socket
+  run(DEFAULT_PORT);
+}
