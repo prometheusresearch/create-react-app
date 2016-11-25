@@ -73,6 +73,8 @@ module.exports = {
   // In production, we only want to load the polyfills and the app code.
   entry: [
     require.resolve('./polyfills'),
+    // DESC: We inject Rex specific setup code.
+    require.resolve('./rex-env'),
     paths.appIndexJs
   ],
   output: {
