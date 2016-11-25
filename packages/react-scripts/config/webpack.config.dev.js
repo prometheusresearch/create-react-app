@@ -21,7 +21,9 @@ const paths = require('./paths');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
-const publicPath = '/';
+// DESC: At prometheus we set publicPath at runtime as bundles could be served
+// under different prefixes.
+//const publicPath = '/';
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
@@ -71,7 +73,9 @@ module.exports = {
     // containing code from all our entry points, and the Webpack runtime.
     filename: 'static/js/bundle.js',
     // This is the URL that app is served from. We use "/" in development.
-    publicPath: publicPath,
+    // DESC: At prometheus we set publicPath at runtime as bundles could be served
+    // under different prefixes.
+    //publicPath: publicPath
   },
   resolve: {
     // This allows you to set a fallback for where Webpack should look for modules.
