@@ -45,6 +45,9 @@ const useYarn = fs.existsSync(paths.yarnLockFile);
 const cli = useYarn ? 'yarn' : 'npm';
 const isInteractive = process.stdout.isTTY;
 
+// DESC: sometimes we need to disable HMR
+var disableHMR = process.env.DISABLE_HMR;
+
 // Warn and crash if required files are missing
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
