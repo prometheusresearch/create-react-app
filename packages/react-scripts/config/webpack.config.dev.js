@@ -24,6 +24,9 @@ var paths = require('./paths');
 var path = require('path');
 // @remove-on-eject-end
 
+// DESC: sometimes we need to disable HMR
+var disableHMR = process.env.DISABLE_HMR;
+
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
 // DESC: At prometheus we set publicPath at runtime as bundles could be served
@@ -57,7 +60,7 @@ module.exports = {
     // the line below with these two lines if you prefer the stock client:
     // require.resolve('webpack-dev-server/client') + '?/',
     // require.resolve('webpack/hot/dev-server'),
-    require.resolve('react-dev-utils/webpackHotDevClient'),
+    !disableHMR && require.resolve('react-dev-utils/webpackHotDevClient'),
     // We ship a few polyfills by default:
     require.resolve('./polyfills'),
     // DESC: We inject Rex specific setup code.
@@ -67,7 +70,7 @@ module.exports = {
     // We include the app code last so that if there is a runtime error during
     // initialization, it doesn't blow up the WebpackDevServer client, and
     // changing JS code would still trigger a refresh.
-  ],
+  ].filter(Boolean),
   output: {
     // Next line is not used in dev but WebpackDevServer crashes without it:
     path: paths.appBuild,
