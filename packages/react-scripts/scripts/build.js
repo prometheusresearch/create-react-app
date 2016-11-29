@@ -87,7 +87,7 @@ recursive(paths.appBuild, (err, fileNames) => {
 });
 
 // Print a detailed summary of build files.
-function printFileSizes(stats, previousSizeMap) {
+function printFileSizes(config, stats, previousSizeMap) {
   var assets = stats.toJson().assets
     .filter(asset => /\.(js|css)$/.test(asset.name))
     .map(asset => {
@@ -96,7 +96,7 @@ function printFileSizes(stats, previousSizeMap) {
       var previousSize = previousSizeMap[removeFileNameHash(asset.name)];
       var difference = getDifferenceLabel(size, previousSize);
       return {
-        folder: path.join('build', path.dirname(asset.name)),
+        folder: path.relative(process.cwd(), path.join(config.output.path, path.dirname(asset.name))),
         name: path.basename(asset.name),
         size: size,
         sizeLabel: filesize(size) + (difference ? ' (' + difference + ')' : '')
@@ -154,7 +154,7 @@ function build(previousSizeMap) {
 
     console.log('File sizes after gzip:');
     console.log();
-    printFileSizes(stats, previousSizeMap);
+    printFileSizes(config, stats, previousSizeMap);
     console.log();
 
     var openCommand = process.platform === 'win32' ? 'start' : 'open';
@@ -162,8 +162,10 @@ function build(previousSizeMap) {
     var publicPath = config.output.publicPath;
     if (homepagePath && homepagePath.indexOf('.github.io/') !== -1) {
       // "homepage": "http://user.github.io/project"
-      console.log('The project was built assuming it is hosted at ' + chalk.green(publicPath) + '.');
-      console.log('You can control this with the ' + chalk.green('homepage') + ' field in your '  + chalk.cyan('package.json') + '.');
+      if (publicPath != null) {
+        console.log('The project was built assuming it is hosted at ' + chalk.green(publicPath) + '.');
+        console.log('You can control this with the ' + chalk.green('homepage') + ' field in your '  + chalk.cyan('package.json') + '.');
+      }
       console.log();
       console.log('The ' + chalk.cyan('build') + ' folder is ready to be deployed.');
       console.log('To publish it at ' + chalk.green(homepagePath) + ', run:');
@@ -188,8 +190,10 @@ function build(previousSizeMap) {
       console.log();
     } else if (publicPath !== '/') {
       // "homepage": "http://mywebsite.com/project"
-      console.log('The project was built assuming it is hosted at ' + chalk.green(publicPath) + '.');
-      console.log('You can control this with the ' + chalk.green('homepage') + ' field in your '  + chalk.cyan('package.json') + '.');
+      if (publicPath != null) {
+        console.log('The project was built assuming it is hosted at ' + chalk.green(publicPath) + '.');
+        console.log('You can control this with the ' + chalk.green('homepage') + ' field in your '  + chalk.cyan('package.json') + '.');
+      }
       console.log();
       console.log('The ' + chalk.cyan('build') + ' folder is ready to be deployed.');
       console.log();
