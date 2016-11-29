@@ -114,12 +114,15 @@ function build(previousFileSizes) {
     const publicPathname = url.parse(publicPath).pathname;
     if (publicUrl && publicUrl.indexOf('.github.io/') !== -1) {
       // "homepage": "http://user.github.io/project"
+<<<<<<< HEAD
+      if (publicPath != null) {
       console.log(
         `The project was built assuming it is hosted at ${chalk.green(publicPathname)}.`
       );
       console.log(
         `You can control this with the ${chalk.green('homepage')} field in your ${chalk.cyan('package.json')}.`
       );
+      }
       console.log();
       console.log(`The ${chalk.cyan('build')} folder is ready to be deployed.`);
       console.log(`To publish it at ${chalk.green(publicUrl)}, run:`);
@@ -154,12 +157,14 @@ function build(previousFileSizes) {
       console.log();
     } else if (publicPath !== '/') {
       // "homepage": "http://mywebsite.com/project"
-      console.log(
-        `The project was built assuming it is hosted at ${chalk.green(publicPath)}.`
-      );
-      console.log(
-        `You can control this with the ${chalk.green('homepage')} field in your ${chalk.cyan('package.json')}.`
-      );
+      if (publicPath != null) {
+        console.log(
+          `The project was built assuming it is hosted at ${chalk.green(publicPath)}.`
+        );
+        console.log(
+          `You can control this with the ${chalk.green('homepage')} field in your ${chalk.cyan('package.json')}.`
+        );
+      }
       console.log();
       console.log(`The ${chalk.cyan('build')} folder is ready to be deployed.`);
       console.log();
