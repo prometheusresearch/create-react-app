@@ -15,8 +15,8 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
-const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+const InterpolateHtmlPlugin = require('@prometheusresearch/react-dev-utils/InterpolateHtmlPlugin');
+const WatchMissingNodeModulesPlugin = require('@prometheusresearch/react-dev-utils/WatchMissingNodeModulesPlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 
@@ -56,7 +56,7 @@ module.exports = {
     // the line below with these two lines if you prefer the stock client:
     // require.resolve('webpack-dev-server/client') + '?/',
     // require.resolve('webpack/hot/dev-server'),
-    !disableHMR && require.resolve('react-dev-utils/webpackHotDevClient'),
+    !disableHMR && require.resolve('@prometheusresearch/react-dev-utils/webpackHotDevClient'),
     // We ship a few polyfills by default:
     require.resolve('./polyfills'),
     require.resolve('react-dev-utils/crashOverlay'),

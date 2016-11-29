@@ -33,8 +33,8 @@ const url = require('url');
 const webpack = require('webpack');
 const config = require('../config/webpack.config.prod');
 const paths = require('../config/paths');
-const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
-const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
+const checkRequiredFiles = require('@prometheusresearch/react-dev-utils/checkRequiredFiles');
+const FileSizeReporter = require('@prometheusresearch/react-dev-utils/FileSizeReporter');
 
 const measureFileSizesBeforeBuild = FileSizeReporter.measureFileSizesBeforeBuild;
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
