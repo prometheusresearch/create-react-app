@@ -1,5 +1,5 @@
 {
-  "name": "@prometheusresearch/react-dev-utils",
+  "name": "react-dev-utils",
   "version": "0.5.2",
   "description": "Webpack utilities used by Create React App",
   "repository": "facebookincubator/create-react-app",

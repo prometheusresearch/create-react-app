@@ -15,7 +15,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
-const InterpolateHtmlPlugin = require('@prometheusresearch/react-dev-utils/InterpolateHtmlPlugin');
+const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
@@ -64,7 +64,7 @@ module.exports = {
     require.resolve('./polyfills'),
     // DESC: We inject Rex specific setup code.
     require.resolve('./rex-env'),
-    paths.appIndexJs
+    paths.appIndexJs,
   ],
   output: {
     // The build folder.

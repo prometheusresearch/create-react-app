@@ -33,8 +33,8 @@ const url = require('url');
 const webpack = require('webpack');
 const config = require('../config/webpack.config.prod');
 const paths = require('../config/paths');
-const checkRequiredFiles = require('@prometheusresearch/react-dev-utils/checkRequiredFiles');
-const FileSizeReporter = require('@prometheusresearch/react-dev-utils/FileSizeReporter');
+const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
+const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 
 const measureFileSizesBeforeBuild = FileSizeReporter.measureFileSizesBeforeBuild;
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
@@ -114,14 +114,13 @@ function build(previousFileSizes) {
     const publicPathname = url.parse(publicPath).pathname;
     if (publicUrl && publicUrl.indexOf('.github.io/') !== -1) {
       // "homepage": "http://user.github.io/project"
-<<<<<<< HEAD
       if (publicPath != null) {
-      console.log(
-        `The project was built assuming it is hosted at ${chalk.green(publicPathname)}.`
-      );
-      console.log(
-        `You can control this with the ${chalk.green('homepage')} field in your ${chalk.cyan('package.json')}.`
-      );
+        console.log(
+          `The project was built assuming it is hosted at ${chalk.green(publicPathname)}.`
+        );
+        console.log(
+          `You can control this with the ${chalk.green('homepage')} field in your ${chalk.cyan('package.json')}.`
+        );
       }
       console.log();
       console.log(`The ${chalk.cyan('build')} folder is ready to be deployed.`);

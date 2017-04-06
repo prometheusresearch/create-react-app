@@ -20,7 +20,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const spawnSync = require('cross-spawn').sync;
 const chalk = require('chalk');
-const prompt = require('@prometheusresearch/react-dev-utils/prompt');
+const prompt = require('react-dev-utils/prompt');
 const paths = require('../config/paths');
 const createJestConfig = require('./utils/createJestConfig');
 

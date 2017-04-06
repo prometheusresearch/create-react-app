@@ -23,17 +23,17 @@ process.env.NODE_ENV = 'development';
 // if this file is missing. dotenv will never modify any environment variables
 // that have already been set.
 // https://github.com/motdotla/dotenv
-require('dotenv').config({silent: true});
+require('dotenv').config({ silent: true });
 
 const fs = require('fs');
 const chalk = require('chalk');
 const detect = require('detect-port');
 const WebpackDevServer = require('webpack-dev-server');
-const clearConsole = require('@prometheusresearch/react-dev-utils/clearConsole');
-const checkRequiredFiles = require('@prometheusresearch/react-dev-utils/checkRequiredFiles');
-const getProcessForPort = require('@prometheusresearch/react-dev-utils/getProcessForPort');
-const openBrowser = require('@prometheusresearch/react-dev-utils/openBrowser');
-const prompt = require('@prometheusresearch/react-dev-utils/prompt');
+const clearConsole = require('react-dev-utils/clearConsole');
+const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
+const getProcessForPort = require('react-dev-utils/getProcessForPort');
+const openBrowser = require('react-dev-utils/openBrowser');
+const prompt = require('react-dev-utils/prompt');
 const paths = require('../config/paths');
 const config = require('../config/webpack.config.dev');
 const devServerConfig = require('../config/webpackDevServer.config');
@@ -119,10 +119,12 @@ if (typeof DEFAULT_PORT === 'number') {
     if (isInteractive) {
       clearConsole();
       var existingProcess = getProcessForPort(DEFAULT_PORT);
-      var question =
-        chalk.yellow('Something is already running on port ' + DEFAULT_PORT + '.' +
-          ((existingProcess) ? ' Probably:\n  ' + existingProcess : '')) +
-          '\n\nWould you like to run the app on another port instead?';
+      var question = chalk.yellow(
+        'Something is already running on port ' +
+          DEFAULT_PORT +
+          '.' +
+          (existingProcess ? ' Probably:\n  ' + existingProcess : '')
+      ) + '\n\nWould you like to run the app on another port instead?';
 
       prompt(question, true).then(shouldChangePort => {
         if (shouldChangePort) {
@@ -130,7 +132,9 @@ if (typeof DEFAULT_PORT === 'number') {
         }
       });
     } else {
-      console.log(chalk.red('Something is already running on port ' + DEFAULT_PORT + '.'));
+      console.log(
+        chalk.red('Something is already running on port ' + DEFAULT_PORT + '.')
+      );
     }
   });
 } else {
