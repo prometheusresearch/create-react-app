@@ -34,7 +34,7 @@ var printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
 var useYarn = fs.existsSync(paths.yarnLockFile);
 
 // Warn and crash if required files are missing
-if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
+if (!checkRequiredFiles([paths.appIndexJs])) {
   process.exit(1);
 }
 
@@ -49,7 +49,8 @@ measureFileSizesBeforeBuild(paths.appBuild).then(previousFileSizes => {
   build(previousFileSizes);
 
   // Merge with the public folder
-  copyPublicFolder();
+  // PROMETHEUS: This is not needed as we use own static server.
+  // copyPublicFolder();
 });
 
 // Print out errors

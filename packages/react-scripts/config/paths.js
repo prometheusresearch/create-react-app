@@ -18,7 +18,35 @@ var url = require('url');
 // https://github.com/facebookincubator/create-react-app/issues/637
 var appDirectory = fs.realpathSync(process.cwd());
 function resolveApp(relativePath) {
+  // PROMETHEUS: Allow override via env var.
+  if (process.env.REACT_SCRIPTS_ROOT != null) {
+    return path.join(process.env.REACT_SCRIPTS_ROOT, relativePath);
+  }
   return path.resolve(appDirectory, relativePath);
+}
+
+function resolveSrc() {
+  if (fs.exists(resolveApp('src'))) {
+    return resolveApp('src');
+  } else {
+    return resolveApp('lib');
+  }
+}
+
+function resolveBuild() {
+  if (process.env.REACT_SCRIPTS_BUILD != null) {
+    return process.env.REACT_SCRIPTS_BUILD;
+  }
+  return resolveApp('build');
+}
+
+function resolveIndexJS() {
+  var packageJSONFilename = resolveApp('package.json');
+  if (!fs.existsSync(packageJSONFilename)) {
+    return resolveApp('src/index.js');
+  }
+  var packageJSON = JSON.parse(fs.readFileSync(packageJSONFilename, 'utf8'));
+  return packageJSON.main || 'src/index.js';
 }
 
 // We support resolving modules according to `NODE_PATH`.
@@ -75,12 +103,12 @@ function getServedPath(appPackageJson) {
 
 // config after eject: we're in ./config/
 module.exports = {
-  appBuild: resolveApp('build'),
+  appBuild: resolveBuild(),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveApp('src/index.js'),
+  appIndexJs: resolveIndexJS(),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
+  appSrc: resolveSrc(),
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
@@ -97,12 +125,12 @@ function resolveOwn(relativePath) {
 // config before eject: we're in ./node_modules/react-scripts/config/
 module.exports = {
   appPath: resolveApp('.'),
-  appBuild: resolveApp('build'),
+  appBuild: resolveBuild(),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveApp('src/index.js'),
+  appIndexJs: resolveIndexJS(),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
+  appSrc: resolveSrc(),
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
@@ -119,24 +147,24 @@ var reactScriptsPath = resolveApp(`node_modules/${ownPackageJson.name}`);
 var reactScriptsLinked = fs.existsSync(reactScriptsPath) && fs.lstatSync(reactScriptsPath).isSymbolicLink();
 
 // config before publish: we're in ./packages/react-scripts/config/
-if (!reactScriptsLinked && __dirname.indexOf(path.join('packages', 'react-scripts', 'config')) !== -1) {
-  module.exports = {
-    appPath: resolveApp('.'),
-    appBuild: resolveOwn('../../build'),
-    appPublic: resolveOwn('template/public'),
-    appHtml: resolveOwn('template/public/index.html'),
-    appIndexJs: resolveOwn('template/src/index.js'),
-    appPackageJson: resolveOwn('package.json'),
-    appSrc: resolveOwn('template/src'),
-    yarnLockFile: resolveOwn('template/yarn.lock'),
-    testsSetup: resolveOwn('template/src/setupTests.js'),
-    appNodeModules: resolveOwn('node_modules'),
-    nodePaths: nodePaths,
-    publicUrl: getPublicUrl(resolveOwn('package.json')),
-    servedPath: getServedPath(resolveOwn('package.json')),
-    // These properties only exist before ejecting:
-    ownPath: resolveOwn('.'),
-    ownNodeModules: resolveOwn('node_modules'),
-  };
-}
+//if (!reactScriptsLinked && __dirname.indexOf(path.join('packages', 'react-scripts', 'config')) !== -1) {
+//  module.exports = {
+//    appPath: resolveApp('.'),
+//    appBuild: resolveOwn('../../build'),
+//    appPublic: resolveOwn('template/public'),
+//    appHtml: resolveOwn('template/public/index.html'),
+//    appIndexJs: resolveOwn('template/src/index.js'),
+//    appPackageJson: resolveOwn('package.json'),
+//    appSrc: resolveOwn('template/src'),
+//    yarnLockFile: resolveOwn('template/yarn.lock'),
+//    testsSetup: resolveOwn('template/src/setupTests.js'),
+//    appNodeModules: resolveOwn('node_modules'),
+//    nodePaths: nodePaths,
+//    publicUrl: getPublicUrl(resolveOwn('package.json')),
+//    servedPath: getServedPath(resolveOwn('package.json')),
+//    // These properties only exist before ejecting:
+//    ownPath: resolveOwn('.'),
+//    ownNodeModules: resolveOwn('node_modules'),
+//  };
+//}
 // @remove-on-eject-end
