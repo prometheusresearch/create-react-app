@@ -17,7 +17,53 @@ const url = require('url');
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebookincubator/create-react-app/issues/637
 const appDirectory = fs.realpathSync(process.cwd());
-const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
+
+function resolveApp(relativePath) {
+  // PROMETHEUS: Allow override via env var.
+  if (process.env.REACT_SCRIPTS_ROOT != null) {
+    return path.join(process.env.REACT_SCRIPTS_ROOT, relativePath);
+  }
+  return path.resolve(appDirectory, relativePath);
+}
+
+function resolveSrc() {
+  if (fs.existsSync(resolveApp('src'))) {
+    return resolveApp('src');
+  } else {
+    return resolveApp('lib');
+  }
+}
+
+function resolveBuild() {
+  if (process.env.REACT_SCRIPTS_BUILD != null) {
+    return process.env.REACT_SCRIPTS_BUILD;
+  }
+  return resolveApp('build');
+}
+
+function resolveIndexJS() {
+  var packageJSONFilename = resolveApp('package.json');
+  if (!fs.existsSync(packageJSONFilename)) {
+    return resolveApp('src/index.js');
+  }
+  var packageJSON = JSON.parse(fs.readFileSync(packageJSONFilename, 'utf8'));
+  return resolveApp(packageJSON.main) || resolveApp('src/index.js');
+}
+
+// We support resolving modules according to `NODE_PATH`.
+// This lets you use absolute paths in imports inside large monorepos:
+// https://github.com/facebookincubator/create-react-app/issues/253.
+
+// It works similar to `NODE_PATH` in Node itself:
+// https://nodejs.org/api/modules.html#modules_loading_from_the_global_folders
+
+// We will export `nodePaths` as an array of absolute paths.
+// It will then be used by Webpack configs.
+// Jest doesn’t need this because it already handles `NODE_PATH` out of the box.
+
+// Note that unlike in Node, only *relative* paths from `NODE_PATH` are honored.
+// Otherwise, we risk importing Node.js core modules into an app instead of Webpack shims.
+// https://github.com/facebookincubator/create-react-app/issues/1023#issuecomment-265344421
 
 const envPublicUrl = process.env.PUBLIC_URL;
 
@@ -51,12 +97,12 @@ function getServedPath(appPackageJson) {
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
-  appBuild: resolveApp('build'),
+  appBuild: resolveBuild(),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveApp('src/index.js'),
+  appIndexJs: resolveIndexJS(),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
+  appSrc: resolveSrc(),
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
@@ -71,12 +117,12 @@ const resolveOwn = relativePath => path.resolve(__dirname, '..', relativePath);
 module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),
-  appBuild: resolveApp('build'),
+  appBuild: resolveBuild(),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveApp('src/index.js'),
+  appIndexJs: resolveIndexJS(),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
+  appSrc: resolveSrc(),
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
@@ -93,27 +139,27 @@ const reactScriptsLinked = fs.existsSync(reactScriptsPath) &&
   fs.lstatSync(reactScriptsPath).isSymbolicLink();
 
 // config before publish: we're in ./packages/react-scripts/config/
-if (
-  !reactScriptsLinked &&
-  __dirname.indexOf(path.join('packages', 'react-scripts', 'config')) !== -1
-) {
-  module.exports = {
-    dotenv: resolveOwn('template/.env'),
-    appPath: resolveApp('.'),
-    appBuild: resolveOwn('../../build'),
-    appPublic: resolveOwn('template/public'),
-    appHtml: resolveOwn('template/public/index.html'),
-    appIndexJs: resolveOwn('template/src/index.js'),
-    appPackageJson: resolveOwn('package.json'),
-    appSrc: resolveOwn('template/src'),
-    yarnLockFile: resolveOwn('template/yarn.lock'),
-    testsSetup: resolveOwn('template/src/setupTests.js'),
-    appNodeModules: resolveOwn('node_modules'),
-    publicUrl: getPublicUrl(resolveOwn('package.json')),
-    servedPath: getServedPath(resolveOwn('package.json')),
-    // These properties only exist before ejecting:
-    ownPath: resolveOwn('.'),
-    ownNodeModules: resolveOwn('node_modules'),
-  };
-}
+//if (
+//  !reactScriptsLinked &&
+//  __dirname.indexOf(path.join('packages', 'react-scripts', 'config')) !== -1
+//) {
+//  module.exports = {
+//    dotenv: resolveOwn('template/.env'),
+//    appPath: resolveApp('.'),
+//    appBuild: resolveOwn('../../build'),
+//    appPublic: resolveOwn('template/public'),
+//    appHtml: resolveOwn('template/public/index.html'),
+//    appIndexJs: resolveOwn('template/src/index.js'),
+//    appPackageJson: resolveOwn('package.json'),
+//    appSrc: resolveOwn('template/src'),
+//    yarnLockFile: resolveOwn('template/yarn.lock'),
+//    testsSetup: resolveOwn('template/src/setupTests.js'),
+//    appNodeModules: resolveOwn('node_modules'),
+//    publicUrl: getPublicUrl(resolveOwn('package.json')),
+//    servedPath: getServedPath(resolveOwn('package.json')),
+//    // These properties only exist before ejecting:
+//    ownPath: resolveOwn('.'),
+//    ownNodeModules: resolveOwn('node_modules'),
+//  };
+//}
 // @remove-on-eject-end
