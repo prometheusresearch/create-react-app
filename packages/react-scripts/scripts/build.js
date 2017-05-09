@@ -39,7 +39,7 @@ const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
 const useYarn = fs.existsSync(paths.yarnLockFile);
 
 // Warn and crash if required files are missing
-if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
+if (!checkRequiredFiles([paths.appIndexJs])) {
   process.exit(1);
 }
 
@@ -51,7 +51,8 @@ measureFileSizesBeforeBuild(paths.appBuild)
     // if you're in it, you don't end up in Trash
     fs.emptyDirSync(paths.appBuild);
     // Merge with the public folder
-    copyPublicFolder();
+    // PROMETHEUS: This is not needed as we use own static server.
+    // copyPublicFolder();
     // Start the webpack build
     return build(previousFileSizes);
   })

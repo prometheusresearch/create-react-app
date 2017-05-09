@@ -1,3 +1,73 @@
+# Create React App @ prometheus
+
+This is a fork of create-react-app which customizes CRA for development of
+prometheus projects.
+
+## Status
+
+* Only `react-scripts` package has patches and is released under
+  `@prometheusresearch/react-scripts` package name.
+
+* The dependency in `react-scripts` on `babel-preset-react-app` is replaced with
+  `babel-preset-prometheusresearch` (which is based on `babel-preset-react-app`
+  stil but adds few prometheus specific plugins, like decorators support).
+
+* A new command added: `react-scripts watch` which is based on `react-scripts
+  start` but runs webpack in watch mode instead of running webpack dev server.
+
+## How to rebase patches on top of newly released CRA
+
+1. Checkout the latest tag with `-prometheus` suffix, for example
+   `v1.0.5000-prometheus`.
+
+   ```
+   git checkout v1.0.5000-prometheus
+   ```
+
+2. Create a new branch `<tagname>-prometheus-dev` (where `<tagname>` is the name
+   of the tag you want to apply patches for, for example `v2.0.0` for a newly
+   released version `2.0.0` of CRA):
+
+   ```
+   git checkout -b v2.0.0-prometheus-dev
+   ```
+
+3. Interactively rebase changes on top of the released original CRA tag:
+
+   ```
+   git rebase -i v2.0.0
+   ```
+
+   There you need to drop all commits which are unrelated to the prometheus
+   patch (remember different tags in original CRA can be released from different
+   branches which can diverge, we are not interested in those changes between,
+   instead we want to cleanly apply our own changes on top of the tag).
+
+4. Solve all merge conflicts if any.
+
+5. Bump version in `packages/react-scripts/package.json` from `v2.0.0` to
+   `v2.0.0000` — add three trailing zeros. This is need to we can released
+   multiple patches to our own version and still track the original version.
+
+6. Commit changes:
+
+   ```
+   git commit
+   ```
+
+7. Create tag:
+
+   ```
+   git tag v2.0.0000
+   ```
+
+8. Run `npm publish` for `react-scripts`:
+
+   ```
+   cd packages/react-scripts/
+   npm publish
+   ```
+
 # Create React App [![Build Status](https://travis-ci.org/facebookincubator/create-react-app.svg?branch=master)](https://travis-ci.org/facebookincubator/create-react-app)
 
 Create React apps with no build configuration.
