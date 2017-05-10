@@ -46,7 +46,7 @@ function resolveIndexJS() {
     return resolveApp('src/index.js');
   }
   var packageJSON = JSON.parse(fs.readFileSync(packageJSONFilename, 'utf8'));
-  return packageJSON.main || 'src/index.js';
+  return resolveApp(packageJSON.main) || resolveApp('src/index.js');
 }
 
 // We support resolving modules according to `NODE_PATH`.
