@@ -26,7 +26,7 @@ function resolveApp(relativePath) {
 }
 
 function resolveSrc() {
-  if (fs.exists(resolveApp('src'))) {
+  if (fs.existsSync(resolveApp('src'))) {
     return resolveApp('src');
   } else {
     return resolveApp('lib');
