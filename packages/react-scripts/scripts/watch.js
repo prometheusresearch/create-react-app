@@ -30,7 +30,7 @@ var paths = require('../config/paths');
 
 var useYarn = fs.existsSync(paths.yarnLockFile);
 var cli = useYarn ? 'yarn' : 'npm';
-var isInteractive = process.stdout.isTTY;
+var isInteractive = process.stdout.isTTY && !process.env.REACT_SCRIPTS_NON_INTERACTIVE;
 
 // Warn and crash if required files are missing
 if (!checkRequiredFiles([paths.appIndexJs])) {
@@ -127,7 +127,9 @@ function setupCompiler() {
 }
 
 function runBuild() {
-  clearConsole();
+  if (isInteractive) {
+    clearConsole();
+  }
   console.log(chalk.cyan('Starting the build...'));
 
   compiler.watch({
