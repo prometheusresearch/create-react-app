@@ -14,6 +14,13 @@ Few things are changed:
   dependencies properly.
 * Few cosmetic changes like less nested default bundle names.
 
+The following environment variables are introduced:
+
+* `REACT_SCRIPTS_BUILD` (optional) is used to control the bundle output
+  directory.
+* `REACT_SCRIPTS_NON_INTERACTIVE` (optional) is used to suppress interactive CLI
+  interface (for example disabling clearing terminal).
+
 # react-scripts
 
 This package includes scripts and configuration used by [Create React App](https://github.com/facebookincubator/create-react-app).<br>
