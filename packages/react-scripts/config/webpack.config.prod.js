@@ -66,12 +66,10 @@ module.exports = {
   // You can exclude the *.map files from the build during deployment.
   devtool: 'source-map',
   // In production, we only want to load the polyfills and the app code.
-  entry: [
-    require.resolve('./polyfills'),
+  entry: [require.resolve('./polyfills')]
     // PROMETHEUS: rex autoloaded dependencies
-    ...prometheus.entry,
-    paths.appIndexJs
-  ],
+    .concat(prometheus.entry)
+    .concat([paths.appIndexJs]),
   output: {
     // The build folder.
     path: paths.appBuild,
@@ -273,8 +271,7 @@ module.exports = {
     new ManifestPlugin({
       fileName: 'asset-manifest.json'
     }),
-    ...prometheus.plugins,
-  ],
+  ].concat(prometheus.plugins),
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
   node: {

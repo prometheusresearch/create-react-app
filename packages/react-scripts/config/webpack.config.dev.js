@@ -58,14 +58,16 @@ module.exports = {
     // require.resolve('react-dev-utils/webpackHotDevClient'),
     // We ship a few polyfills by default:
     require.resolve('./polyfills'),
+  ]
     // PROMETHEUS: rex autoloaded dependencies
-    ...prometheus.entry,
-    // Finally, this is your app's code:
-    paths.appIndexJs
-    // We include the app code last so that if there is a runtime error during
-    // initialization, it doesn't blow up the WebpackDevServer client, and
-    // changing JS code would still trigger a refresh.
-  ],
+    .concat(prometheus.entry)
+    .concat([
+      // Finally, this is your app's code:
+      paths.appIndexJs
+      // We include the app code last so that if there is a runtime error during
+      // initialization, it doesn't blow up the WebpackDevServer client, and
+      // changing JS code would still trigger a refresh.
+    ]),
   output: {
     // Next line is not used in dev but WebpackDevServer crashes without it:
     path: paths.appBuild,
@@ -241,8 +243,9 @@ module.exports = {
     new ManifestPlugin({
       fileName: 'asset-manifest.json'
     }),
-    ...prometheus.plugins,
-  ],
+  ].concat(
+    prometheus.plugins
+  ),
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
   node: {
