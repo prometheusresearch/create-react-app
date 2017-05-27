@@ -10,7 +10,20 @@ var paths = require('../paths');
 var BABEL_PRESET = require.resolve('babel-preset-prometheusresearch');
 var INTROSPECTION_LOADER = require.resolve('./introspection/loader');
 
+var pkg = JSON.parse(fs.readFileSync(paths.appPackageJson, 'utf8'));
+
 var entry = [];
+
+if (pkg && pkg.rex && pkg.rex.style) {
+  entry.push(path.join(cwd, pkg.rex.style));
+} else if (pkg.styleEntry) {
+  entry.push(path.join(cwd, pkg.styleEntry));
+} else {
+  var indexLess = path.join(path.dirname(paths.appPackageJson), 'style', 'index.less');
+  if (fs.existsSync(indexLess)) {
+    entry.push(indexLess);
+  }
+}
 
 // Add dependencies with rex.bundleAll.
 var nodeModules = fs.readdirSync(paths.appNodeModules);
@@ -26,7 +39,6 @@ nodeModules.forEach(pkgName => {
 });
 
 // Add self if rex.bundleAll
-var pkg = JSON.parse(fs.readFileSync(paths.appPackageJson, 'utf8'));
 if (pkg.rex && pkg.rex.bundleAll) {
   entry.push(makeIntrospectableEntry(paths.appIndexJs, pkg.name));
 }

@@ -1,6 +1,6 @@
 {
   "name": "@prometheusresearch/react-scripts",
-  "version": "0.9.5003",
+  "version": "0.9.5004",
   "description": "Configuration and scripts for Create React App.",
   "repository": "facebookincubator/create-react-app",
   "license": "BSD-3-Clause",
@@ -51,6 +51,8 @@
     "http-proxy-middleware": "0.17.3",
     "jest": "18.1.0",
     "json-loader": "0.5.4",
+    "less": "^1.5.1",
+    "less-loader": "^0.7.8",
     "object-assign": "4.1.1",
     "postcss-loader": "1.2.2",
     "promise": "7.1.1",
