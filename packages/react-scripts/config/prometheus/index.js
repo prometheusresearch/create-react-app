@@ -14,6 +14,8 @@ var pkg = JSON.parse(fs.readFileSync(paths.appPackageJson, 'utf8'));
 
 var entry = [];
 
+var cwd = process.cwd();
+
 if (pkg && pkg.rex && pkg.rex.style) {
   entry.push(path.join(cwd, pkg.rex.style));
 } else if (pkg.styleEntry) {
