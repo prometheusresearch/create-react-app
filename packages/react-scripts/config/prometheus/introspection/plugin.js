@@ -28,9 +28,11 @@ IntrospectablePlugin.prototype.apply = function(compiler) {
         return [
           'if (typeof window !== "undefined") {',
           '  var __introspectable_modules__ = ' + JSON.stringify(registry) + ';',
+          '  var prevRequire = window.' + this.requireName + ';',
           '  window.' + this.requireName + ' = function(id) {',
           '    var module = __introspectable_modules__[id];',
           '    if (module === undefined) {',
+          '      if (prevRequire) { return prevRequire(id); }',
           '      throw new Error([',
           '        "Cannot find package " + id + " in the application bundle.",',
           '      ].join("\\n"));',
