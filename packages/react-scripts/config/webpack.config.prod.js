@@ -70,6 +70,8 @@ module.exports = {
     // PROMETHEUS: rex autoloaded dependencies
     .concat(prometheus.entry)
     .concat([paths.appIndexJs]),
+  // PROMETHEUS: externals defined in package.json
+  externals: [prometheus.externals],
   output: {
     // The build folder.
     path: paths.appBuild,
