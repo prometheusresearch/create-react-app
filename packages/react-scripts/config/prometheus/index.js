@@ -12,7 +12,19 @@ var INTROSPECTION_LOADER = require.resolve('./introspection/loader');
 
 var pkg = JSON.parse(fs.readFileSync(paths.appPackageJson, 'utf8'));
 
+// Exclude some rex-specific dependencies even bundleAll is set to true
+var excludeEntryPoints = {};
+if (pkg && pkg.rex && pkg.rex.dependencies) {
+  for (var dep in pkg.rex.dependencies) {
+    if (pkg.rex.dependencies[dep] === false) {
+      excludeEntryPoints[dep] = true;
+    }
+  }
+}
+
 var entry = [];
+
+var cwd = process.cwd();
 
 if (pkg && pkg.rex && pkg.rex.style) {
   entry.push(path.join(cwd, pkg.rex.style));
@@ -33,7 +45,7 @@ nodeModules.forEach(pkgName => {
     return;
   }
   var pkg = JSON.parse(fs.readFileSync(pkgFilename, 'utf8'));
-  if (pkg.rex && pkg.rex.bundleAll) {
+  if (pkg.rex && pkg.rex.bundleAll && !excludeEntryPoints[pkgName]) {
     entry.push(makeIntrospectableEntry(pkgName, pkgName));
   }
 });
@@ -95,7 +107,11 @@ var plugins = [
   }),
 ];
 
+// Allow webpack externals to be declared in package.json
+var externals = (pkg.rex || {}).externals || {};
+
 module.exports = {
   plugins: plugins,
   entry: entry,
+  externals: externals
 };
