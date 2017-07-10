@@ -9,6 +9,7 @@ var paths = require('../paths');
 
 var BABEL_PRESET = require.resolve('babel-preset-prometheusresearch');
 var INTROSPECTION_LOADER = require.resolve('./introspection/loader');
+var SETUP_RUNTIME_ENTRY = require.resolve('./setup-runtime.js');
 
 var pkg = JSON.parse(fs.readFileSync(paths.appPackageJson, 'utf8'));
 
@@ -22,7 +23,7 @@ if (pkg && pkg.rex && pkg.rex.dependencies) {
   }
 }
 
-var entry = [];
+var entry = [SETUP_RUNTIME_ENTRY];
 
 var cwd = process.cwd();
 
